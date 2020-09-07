@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookCheckMapper">
+
+<!-- 온라인 예약 5분 전인 계정들 조회 -->
+<select id="getFiveBookIdList" resultType="com.exe.dto.BookDTO">
+	select BOOKNUM,GYMTRAINERPICK,CUSID,BOOKTYPE,faceLink,gymName,BOOKHOUR from(
+	select TO_DATE(replace(replace(replace(replace(SUBSTR(bookhour,1,14),'-',''),',',''),':',''),'~',''),
+	'YYYY:MM:DD HH24')-5/(24*60) BOOKDATE,BOOKNUM,b.GYMTRAINERPICK,CUSID,BOOKTYPE,nvl(facelink,'0') faceLink, gymName,
+	replace(replace(replace(replace(SUBSTR(bookhour,1,14),'-',''),',',''),':',''),'~','') BOOKHOUR
+	from book b, gym g where b.gymid=g.gymid)
+	where BOOKDATE = TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDDHH24MI'),'YYYY-MM-DD HH24:MI')
+	and BOOKTYPE like '%online%' and facelink='0'
+</select>
+
+<!-- 온라인 예약 53분 후인 계정들 조회 -->
+<select id="getOneHourIdList" resultType="com.exe.dto.BookDTO">
+	select BOOKNUM,faceLink from(
+	select TO_DATE(replace(replace(replace(replace(SUBSTR(bookhour,1,14),'-',''),',',''),':',''),'~',''),
+	'YYYY:MM:DD HH24')+53/(24*60) BOOKDATE,BOOKNUM,BOOKTYPE,nvl(facelink,'0') faceLink,
+	replace(replace(replace(replace(SUBSTR(bookhour,1,14),'-',''),',',''),':',''),'~','') BOOKHOUR from book)
+<![CDATA[
+	where BOOKDATE < TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDDHH24MI'),'YYYY-MM-DD HH24:MI')
+]]>
+	and BOOKTYPE like '%online%' and facelink!='0'
+</select>
+
+<!-- 온라인 예약 5분 전인 계정들에 FaceLink 등록 -->
+<update id="setFaceLink" parameterType="hashMap">
+	update BOOK set faceLink=#{faceLink},faceLinkCreated=sysdate where bookNum=#{bookNum}
+</update>
+
+<!-- 온라인 예약 1시간 후인 계정들에 FaceLink 삭제 -->
+<update id="delFaceLink" parameterType="int">
+	update BOOK set faceLink='',faceLinkCreated='' where bookNum=#{bookNum}
+</update>
+
+<!-- SessionID로 페이스링크가 있는 온라인 예약 검색 -->
+<select id="getOnlineBookSearch" parameterType="hashMap" resultType="com.exe.dto.BookDTO">
+	select * from(
+	select TO_DATE(replace(replace(replace(replace(SUBSTR(bookhour,1,14),'-',''),',',''),':',''),'~',''),
+	'YYYY:MM:DD HH24:MI:SS')+1/24 BOOKDATE, BOOKNUM,CUSID,A.GYMID,A.GYMTRAINERPICK,BOOKTYPE,FACELINK,FACELINKCREATED,BOOKCREATED,BOOKHOUR,B.GYMNAME
+	from book A,GYM B where cusId=#{sessionId} and BOOKTYPE like '%online%' and A.GYMID=B.GYMID)
+	where BOOKDATE > SYSDATE and facelink is not null
+</select>
+
+</mapper>

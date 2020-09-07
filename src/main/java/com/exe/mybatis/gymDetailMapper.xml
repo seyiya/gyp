@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gymDetailMapper">
+<!-- 체육관 하나의 데이터 가져오기 -->
+	<select id="getGymData" parameterType="String" resultType="com.exe.dto.GymDTO">
+		select gymId,gymType,gymName,gymTel,gymAddr,gymLongitude,gymLatitude,
+		gymTrainer,gymTrainerPic,gymPic,gymProgram,gymFacility,gymHour,gymOk,gymPass 
+		from gym where gymId=#{gymId}
+	</select>
+	
+<!-- 리뷰 전체의 최댓값 : 삽입용 -->
+	<select id="getReviewNumMax" resultType="int">
+		select nvl(max(reNum),0) from review
+	</select>
+	
+<!-- 한 체육관의 리뷰 갯수 -->
+	<select id="getReviewNum" parameterType="String" resultType="int">
+	select nvl(count(*),0) from review where gymId=#{gymId}
+	</select>
+
+<!-- 리뷰 리스트 가져오기 -->
+	<select id="getReviewList" parameterType="map" resultType="com.exe.dto.ReviewDTO">
+		select * from (
+		select rownum rnum, data.* from (
+		select reNum,reType,cusId,gymId,star,reContent,reCreated 
+		from review where gymId=#{gymId} 
+		order by reNum desc) data)
+	<![CDATA[
+		where rnum>=#{start} and rnum<=#{end}
+	]]>
+	</select>
+	
+<!-- 리뷰 삽입 -->
+	<insert id="insertReviewData" parameterType="com.exe.dto.ReviewDTO">
+		insert into review (reNum,reType,cusId,gymId,star,reContent,reCreated)
+		values (#{reNum},#{reType},#{cusId},#{gymId},#{star},#{reContent},sysdate)
+	</insert>
+	
+<!-- 리뷰 삭제 -->
+	<delete id="deleteReviewData" parameterType="int">
+		delete review where reNum=#{reNum}
+	</delete>
+<!-- 체육관 평점 평균 -->
+	<select id="getAvgReview" parameterType="String" resultType="int">
+		select nvl(avg(star), 0) from review where gymId=#{gymId}
+	</select>
+
+<!-- 해당 체육관의 Book 목록에 cusId가 있는 수 -->
+	<select id="getTimesCusBookedGym" parameterType="map" resultType="int">
+		select count(*) from (select * from book where gymId=#{gymId} and cusId=#{cusId} and bookOk='true')
+	</select>
+	
+<!-- 해당 체육관의 review 목록에 cusId가 있는 수 -->
+	<select id="getTimesCusReviewedGym" parameterType="map" resultType="int">
+		select count(*) from (select * from review where gymId=#{gymId} and cusId=#{cusId})
+	</select>
+
+<!-- 사용자 잔여 pass -->
+	<select id="getCusPassLeft" parameterType="String" resultType="int">
+		select cusPass from customer where cusId=#{cusId}
+	</select>
+	
+<!-- 예약 중복확인 -->
+	<select id="checkDuplicateBook" parameterType="com.exe.dto.BookDTO" resultType="int">
+		select count(*) from book where 
+      	(gymId=#{gymId} and gymTrainerPick=#{gymTrainerPick} and bookHour=#{bookHour} and bookOK='true') 
+     	or (cusId=#{cusId} and bookHour=#{bookHour} and bookOK='true')
+	</select>
+	
+<!-- 예약 삽입 -->
+	<insert id="insertBookData" parameterType="com.exe.dto.BookDTO">
+		insert into book (bookNum,cusId,gymId,gymTrainerPick,bookType,bookCreated,bookHour,bookOk)
+		values (#{bookNum},#{cusId},#{gymId},#{gymTrainerPick},#{bookType},sysdate,#{bookHour},'true')
+	</insert>
+	
+<!-- 예약 최댓값 : 삽입용 -->
+	<select id="getBookNumMax" resultType="int">
+		select nvl(max(bookNum),0) from book
+	</select>
+	
+<!-- 예약시 사용자 잔여 pass 갱신 -->
+	<update id="updateCusPass" parameterType="map">
+		update customer set cusPass=#{cusPass} where cusId=#{cusId}
+	</update>
+
+<!-- 체육관 찜횟수 : 특정 체육관 찜 여부 파악 -->
+	<select id="countJjimData" parameterType="map" resultType="int">
+		select count(*) from jjim
+		where cusId=#{cusId} and gymId=#{gymId}
+	</select>	
+	
+<!-- 체육관 찜하기 -->
+	<insert id="insertJjimData">
+		insert into jjim (cusId,gymId,jjimCreated) 
+		values (#{cusId},#{gymId},sysdate)
+	</insert>
+	
+<!-- 체육관 찜 삭제하기 -->
+	<delete id="deleteJjimData" parameterType="String">
+		delete jjim where gymId=#{gymId}
+	</delete>
+	
+<!-- 체육관 상세의 관련 인기 상품 3가지 -->
+	<select id="getProductListForGym" parameterType="String" resultType="com.exe.dto.ProductDTO">
+		select * from (
+		select rownum rnum, data.* from (
+		select productId,productName,productImg,productPrice,productHit,productContent 
+		from product where productId like #{c} || '%'
+		order by productHit desc) data)
+	<![CDATA[
+		where rnum>=1 and rnum<=3
+	]]>
+	</select>
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qna">
+<!-- qnaNum 최대값 -->
+<select id="maxNum" resultType="int">
+	select nvl(max(qnaNum),0) from qna
+</select>
+<!-- 공지사항 생성 -->
+<insert id="insertData" parameterType="com.exe.dto.QnaDTO">
+	insert into qna (qnaNum,qnaType,cusId,qnaTitle,qnaContent,qnaCreated,
+	qnaDepth,qnaOrderNo,qnaParent,qnaGroupNum) 
+	values (#{qnaNum},#{qnaType},#{cusId},#{qnaTitle},#{qnaContent},sysdate,
+	#{qnaDepth},#{qnaOrderNo},#{qnaParent},#{qnaGroupNum})
+</insert>
+<!-- 등록된 데이터 총 갯수 -->
+<select id="getDataCount"  resultType="int" parameterType="HashMap">
+	select nvl(count(*),0) from qna 
+	where ${searchKey} like '%' || #{searchValue} || '%' and qnaTitle like '%' || #{searchValue2} || '%'
+</select>
+<!-- 리스트 나열 -->
+<select id="getLists" parameterType="HashMap" resultType="com.exe.dto.QnaDTO">
+	select * from (
+	select rownum rnum, data.* from (
+	select qnaNum,qnaType,cusId,qnaTitle,qnaDepth,qnaContent,to_char(qnaCreated,'YYYY-MM-DD') qnaCreated
+	from qna where ${searchKey} like '%' || #{searchValue} || '%' and qnaTitle like '%' || #{searchValue2} || '%'
+	order by qnaGroupNum desc, qnaorderNo asc) data) 
+<![CDATA[
+	where rnum>=#{start} and rnum<=#{end}
+]]>	
+</select>
+<!-- 한개의 게시물 가져오기 -->
+<select id="getReadData" parameterType="int" resultType="com.exe.dto.QnaDTO">
+	select qnaNum,qnaType,cusId,qnaTitle,qnaContent,qnaCreated,
+	qnaDepth,qnaOrderNo,qnaParent,qnaGroupNum 
+	from qna where qnaNum=#{qnaNum}
+</select>
+<!-- 이전글 -->
+<select id="preReadData" resultType="com.exe.dto.QnaDTO" >
+<![CDATA[
+	select rownum, data.* from (
+	select qnaNum,qnaTitle from qna 
+	where (${searchKey} like '%' || #{searchValue} || '%' and qnaTitle like '%' || #{searchValue2} || '%')  
+	and (qnaNum > #{qnaNum}) order by qnaNum asc,qnaOrderNo desc) data 
+	where rownum=1
+]]>	
+</select>
+<!-- 다음글 -->
+<select id="nextReadData" resultType="com.exe.dto.QnaDTO">
+<![CDATA[
+	select rownum, data.* from (
+	select qnaNum,qnaTitle from qna 
+	where (${searchKey} like '%' || #{searchValue} || '%' and qnaTitle like '%' || #{searchValue2} || '%')  
+	and (qnaNum < #{qnaNum}) order by qnaNum desc,qnaOrderNo asc) data 
+	where rownum=1
+]]>	
+</select>
+<!-- 답변일 경우 orderNo(같은 그룹 내에서 출력되는 순서)를 변경-->
+<update id="orderNoUpdate" parameterType="map">
+	update qna set qnaOrderNo = qnaOrderNo + 1
+	where qnaGroupNum = #{qnaGroupNum} and qnaOrderNo > #{qnaOrderNo}
+</update>
+<!-- 게시글 수정 -->
+<update id="updateData" parameterType="com.exe.dto.QnaDTO">
+	update qna set qnaTitle=#{qnaTitle},qnaContent=#{qnaContent} 
+	where qnaNum=#{qnaNum}
+</update>
+<!-- 게시글 삭제 -->
+<delete id="deleteData" parameterType="int">
+	delete qna where qnaNum in 
+	(select qnaNum from qna start with qnaNum=#{qnaNum}
+	connect by prior qnaNum=qnaParent)
+</delete>
+
+<!-- qna타입 -->
+<select id="getQnaType" parameterType="int" resultType="String">
+	select qnaType from qna where qnaNum = #{qnaNum}
+</select>
+
+</mapper>
+
+

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	
+	<!-- DML을 가지고 있는 곳 위치 -->
+	<!--  여기에 본인 mapper파일위치등록-->
+	<mappers>
+		<!-- ********************원도현*********************** -->
+		<!-- 로그인 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/loginMapper.xml"/>
+		<!-- 유저 회원 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/customerMapper.xml"/>
+		<!-- 체육관 회원 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/gymMapper.xml"/>
+		<!-- 쇼핑몰 상품관련 -->
+		<mapper resource="com/exe/mybatis/productMapper.xml"/>
+		<!--  장바구니 -->
+		<mapper resource="com/exe/mybatis/cartMapper.xml"/>
+		
+		
+		<!-- ********************김세이*********************** -->
+		<!-- 체육관 상세 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/gymDetailMapper.xml"/>
+		<!-- 결제 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/paymentMapper.xml"/>
+		
+		<!-- ********************서예지*********************** -->
+		<!-- 공지사항 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/noticeMapper.xml"/>
+		<!-- Q&A Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/qnaMapper.xml"/>
+
+		
+		<!-- ********************채종완*********************** -->
+		<!-- 회원가입 Mapper 추가 -->
+		<mapper resource="com/exe/mybatis/createMapper.xml"/>
+		
+		
+		<!-- ********************최보경*********************** -->
+		<mapper resource="com/exe/mybatis/recommendMapper.xml"/>
+		
+		
+		<!-- ********************경기민*********************** -->
+		<mapper resource="com/exe/mybatis/mapMapper.xml"/>
+		<mapper resource="com/exe/mybatis/bookCheckMapper.xml"/>
+		
+		
+		<!-- ********************최원식*********************** -->
+		<mapper resource="com/exe/mybatis/adminBoardMapper.xml"/>
+		<mapper resource="com/exe/mybatis/adminCustomerMapper.xml"/>
+		<mapper resource="com/exe/mybatis/adminGymMapper.xml"/>
+		<mapper resource="com/exe/mybatis/adminProductMapper.xml"/>
+		
+		
+	</mappers>
+</configuration>

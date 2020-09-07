@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="adminGymMapper">
+
+<!-- 유무성 검사 -->
+<!-- true인것 확인 -->
+<select id="getDataCount" parameterType="hashMap" resultType="int">
+	select nvl(count(*),0) from gym
+	where ${searchKey} like '%' || #{searchValue} || '%' and gymOk = 'true'
+</select>
+
+<!-- 리스트 true -->
+<select id="getLists" parameterType="hashMap" resultType="com.exe.dto.GymDTO">
+	select * from (
+	select rownum rnum, data.* from(
+	select gymId, gymType, gymName, gymPwd, gymEmail, gymTel, gymAddr, gymLongitude, gymLatitude, 
+	gymTrainer, gymTrainerPic, gymPic, gymProgram, gymFacility, gymHour, to_char(gymCreated,'YYYY-MM-DD') gymCreated, gymPass, gymOk
+	from gym where ${searchKey} like '%' || #{searchValue} || '%' and gymOk = 'true'
+	order by gymCreated desc) data)
+<![CDATA[
+where rnum>=#{start} and rnum<=#{end}
+]]>
+</select>
+
+<!-- 리스트 false -->
+<select id="getFalseLists" parameterType="hashMap" resultType="com.exe.dto.GymDTO">
+	select * from (
+	select rownum rnum, data.* from(
+	select gymId, gymType, gymName, gymPwd, gymEmail, gymTel, gymAddr, gymLongitude, gymLatitude, 
+	gymTrainer, gymTrainerPic, gymPic, gymProgram, gymFacility, gymHour, to_char(gymCreated,'YYYY-MM-DD') gymCreated, gymPass, gymOk
+	from gym where gymOk = 'false'
+	order by gymCreated desc) data)
+</select>
+
+<!-- gymOk false에서 true로 변경 -->
+<update id="updateData" parameterType="com.exe.dto.GymDTO">
+	update gym set gymOk = 'true'
+	where gymId=#{gymId}
+</update>
+
+<!-- gymOk false 거절용 삭제 -->
+<delete id="deleteData" parameterType="String">
+	delete gym where gymId=#{gymId}
+</delete>
+ 
+</mapper>

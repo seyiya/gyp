@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gymMapper">
+
+<!-- 체육관 회원 데이터 불러오기 -->
+<select id="getgymReadData" parameterType="String" resultType="com.exe.dto.GymDTO"> 
+	select gymId,gymType,gymName,gymPwd,gymEmail,gymTel,gymAddr,gymAddrDetail,gymCreated,gymPass,
+	gymProgram,gymFacility,gymPic,gymTrainerPic,gymTrainer,gymHour from GYM where gymId=#{sessionId}
+</select>
+
+<!-- 회원정보 수정 -->
+<update id="gymUpdateData" parameterType="com.exe.dto.GymDTO">
+	update GYM set gymName=#{gymName}, gymPwd=#{gymPwd}, gymEmail=#{gymEmail}, gymAddr=#{gymAddr},gymAddrDetail=#{gymAddrDetail},
+	gymProgram=#{gymProgram}, gymFacility=#{gymFacility}, gymTrainerPic=#{gymTrainerPic}, 
+	gymTrainer=#{gymTrainer}, gymPic=#{gymPic}, gymHour=#{gymHour}
+	where gymId=#{gymId}
+</update>
+
+<!-- 회원정보 삭제 -->
+<delete id="gymdeleteData" parameterType="com.exe.dto.GymDTO">
+	delete from GYM where gymId=#{gymId}
+</delete>
+
+<!-- 예약 리스트 -->
+<select id="gymbookgetLists" resultType="com.exe.dto.BookDTO">
+	select DISTINCT GYM.gymName,BOOK.gymId,BOOK.bookNum,BOOK.cusId,GYM.gymId,BOOK.gymTrainerPick,BOOK.bookType,BOOK.faceLink,BOOK.faceLinkCreated,BOOK.bookHour,to_char(BOOK.bookCreated,'YYYY-mm-DD(HH24)') bookCreated 
+	from BOOK,GYM where GYM.gymId=BOOK.gymId and Book.gymId=#{bookId} order by BOOK.bookNum desc
+</select>
+
+<!-- 리뷰 리스트 -->
+<select id="gymreviewgetLists" resultType="com.exe.dto.ReviewDTO">
+	select DISTINCT REVIEW.reNum,REVIEW.reType,REVIEW.cusId,GYM.gymName,REVIEW.gymId,GYM.gymId,REVIEW.productId,REVIEW.star,REVIEW.reContent,to_char(REVIEW.reCreated,'YYYY-MM-DD') reCreated
+	from REVIEW,GYM where REVIEW.gymId=#{reviewId} and REVIEW.gymId=GYM.gymId order by REVIEW.reNum desc
+</select>
+
+<!-- 예약 데이터 개수 -->
+<select id="getDataCount"  parameterType="hashMap" resultType="int">
+	select nvl(count(*),0) from BOOK
+	<![CDATA[
+	where bookOk=#{type} and gymId=#{gymId} and bookCreated <= sysdate and to_char(bookCreated,'YYYY-MM')<= #{aftermonthdate} and to_char(bookCreated,'YYYY-MM')> #{beforemonthdate}
+	]]>
+</select>
+
+
+</mapper>

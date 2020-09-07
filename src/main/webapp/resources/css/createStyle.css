@@ -1,0 +1,323 @@
+/* 전체 css. 가급적 수정하지 말아주세요. 가급적 각 페이지마다 css파일을 생성하는게 좋을것같아요. */
+/* jsp파일에서 css파일을 link할때, 아래것이 우선순위가 높으므로, 
+style.css를 위쪽에 두고, 자신이 생성한 css파일을 아래에 놓아 주세요. */
+
+/************************************************************************/
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+   margin: 0;
+   padding: 0;
+   height: 100%;
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-width: 1500px;
+  max-width: 100%;
+}
+
+a{
+   text-decoration: none;
+   
+}
+
+/************************************************************************/
+/*header*/
+
+.navbar {
+  overflow: hidden;
+  background-color: #ffffff;
+  font-family: 'Do Hyeon', sans-serif;
+  min-width: 1500px;
+  max-width: 100%;
+  box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
+  
+}
+
+.left-sided{
+   float:left;
+   
+}
+.right-sided{
+   float:right;
+}
+
+.inline {
+    display: inline-block;
+    padding: 14px 16px;
+}
+
+.navbar font { /* bar상단 폰트수정 */
+  float: left;
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 14pt;
+  color: #555;
+  text-align: center;
+  margin : 5px 5px;
+  padding: 10px 10px;
+  text-decoration: none;
+  line-height: 5;
+  height: 50px;
+}
+
+.navbar a img {
+  float: left;
+  font-size: 13px;
+  color: #000000;
+  background-color: white;
+  text-align: center;
+  padding: 44px 16px 14px 45px;
+  text-decoration: none;
+  line-height: 5;
+  width: 250px;
+}
+
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn { /* 드롭다운 상위 */
+  border: none;
+  outline: none;
+  color: #555;
+  padding: 14px 30px;
+  margin: 0;
+  line-height: 5;
+  background-color: white;
+  font-family: 'Do Hyeon', sans-serif;
+  font-size : 14pt;
+  cursor:pointer;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn { /* 드롭다운 마우스오버 */
+  background-color: #DFDFEB;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #2E338C; 
+  width: 100%;
+  height: auto;
+  left: 0;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content .header {
+  background: #808040;
+  padding: 16px;
+  color: white;
+}
+
+.dropdown-content h3{
+   width:95%;
+   margin:0 auto;
+   padding: 15px 10px 10px 218px;
+   color: white; /* 드롭다운 중위 배경 */
+   font-size: 14pt;
+}
+
+.dropdown:hover .dropdown-content {
+     display: block;
+}
+
+/* 드롭다운 하위 */
+.column {
+  float: left;
+  width: 12.5%; 
+  padding: 30px;
+  background-color: #DFDFEB;
+  font-size: 14pt;
+  /* height: auto; */
+}
+
+/* 드롭다운 행간격 */
+.column a {
+  font-family: 'Do Hyeon', sans-serif;
+  float: none;
+  color: black;
+  padding: 0px; 
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* 드롭다운 하위 글자색 */
+.column p :hover {
+  color: #F23D4C; 
+  font-family: 'Do Hyeon', sans-serif; 
+  font-size: 14pt;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.search-group{
+   padding: 44px 50px 10px 10px;
+   
+}
+
+#search-box{
+   background: #eee;
+   padding:5px;
+   border-radius:5px 0 0 5px;
+   -moz-border-radius:5px 0 0 5px;
+   -webkit-border-radius:5px 0 0 5px;
+   -o-border-radius:5px 0 0 5px;
+   border:0 none;
+   width:180px;
+   font-size: 1em;
+}
+
+#search-button{
+   background:#F23D4C;
+   color:white;
+   font: 'trebuchet ms', trebuchet;
+   padding:5px 10px;
+   border-radius:0 5px 5px 0;
+   -moz-border-radius:0 5px 5px 0;
+   -webkit-border-radius:0 5px 5px 0;
+   -o-border-radius:0 5px 5px 0;
+   border:0 none;
+   font-weight:bold;
+  cursor:pointer;
+}
+
+
+/************************************************************************/
+/*floating*/
+
+
+      .section_floating {
+      }
+      
+      /* NAVIGATION */
+      .nav {
+        font-size : 12pt;
+        font-family: 'Do Hyeon', sans-serif;
+        width: 120px!important;
+        height: 280px!important;
+        position : fixed;
+		z-index: 1;
+        bottom: 30px;
+        right: 50px;
+        margin: 10px auto 0;
+        background: linear-gradient(to right bottom, #D5D5ED, white); /* 그라데이션 */
+        padding:10px 5px 10px 5px; /* 맨 위아래 여백 */
+        box-shadow: 5px 5px 5px #dedede;
+        border-radius: 100px; /* 전체 위아래 둥글 */
+      }
+      .nav ul {
+        list-style: none;
+        text-align: center;
+        margin-block-end: 16px;
+        margin-block-start: 16px;
+      }
+      .nav ul li {
+        display: inline-block;
+      }
+      .nav ul li a {
+        display: block;
+        padding: 10px;  /* 박스 높이 조정 */
+        text-decoration: none;
+        color: #7a7ebf;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin: 0 5px;
+      }
+      .nav ul li a,
+      .nav ul li a:after,
+      .nav ul li a:before {
+        transition: all .5s;
+      }
+      .nav ul li a:hover {
+        color: #2E338C;
+      }
+      
+      
+      /* stroke */
+      .nav.fill ul li a {
+        position: relative;
+      }
+      .nav.fill ul li a:after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        width: 0%;
+        content: '.';
+        color: transparent;
+        background: #aaa;
+        height: 1px;
+      }
+      
+      .nav.fill ul li a {
+        transition: all 2s;
+      }
+      
+      .nav.fill ul li a:after {
+        text-align: left;
+        content: '.';
+        margin: 0;
+        opacity: 0;
+      }
+      .nav.fill ul li a:hover {
+        color: #fff; /*효과 : 글자색*/
+        z-index: 1;
+      }
+      .nav.fill ul li a:hover:after {
+        z-index: -10;
+        animation: fill 1s forwards;
+        -webkit-animation: fill 1s forwards;
+        -moz-animation: fill 1s forwards;
+        opacity: 1;
+        border-radius: 60px; /* 박스 radius */
+      }
+      
+      /* Keyframes */
+      @-webkit-keyframes fill {
+        0% {
+          width: 0%;
+          height: 1px;
+        }
+        50% {
+          width: 100%;
+          height: 1px;
+        }
+        100% {
+          width: 100%;
+          height: 100%;
+          background: #2E338C; /*효과 : 박스 색*/
+        }
+      }
+      
+/************************************************************************/
+/*footer*/
+<style type="text/css">
+
+
+.footer {
+   width: 100%;
+   position : absolute;
+    bottom:0;
+    
+}
+
+
+.w3-center{text-align:center!important}
+.w3-light-grey,.w3-hover-light-grey:hover,.w3-light-gray,.w3-hover-light-gray:hover{color:#000!important;background-color:#f1f1f1!important}
+.w3-padding-32{padding-top:32px!important; background: linear-gradient(170deg, #DFDFEB, white, #DFDFEB);padding-bottom:32px!important}.w3-padding-48{padding-top:48px!important;padding-bottom:48px!important}

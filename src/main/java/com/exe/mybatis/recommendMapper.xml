@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="recommend">
+
+	
+	<!-- ************** 체육관 추천 ************** -->
+	
+	<!-- 회원 세션id를 기반으로 주소 추출 -->	
+	<select id="customerAddr" resultType="String" parameterType="String">
+		SELECT CUSADDR FROM CUSTOMER WHERE CUSID = #{sessionId}
+	</select>
+	
+	<!-- 로그인 시 : 회원주소를 기반으로 가까운 체육관 -->
+	<select id="nearGymList" resultType="com.exe.dto.GymDTO" parameterType="String">
+		SELECT GYMID, GYMTYPE, GYMNAME, GYMTEL, GYMADDR, GYMPIC, GYMPROGRAM, GYMHOUR, GYMPASS FROM GYM
+		WHERE GYMADDR LIKE '%' || #{cutomerAddr} || '%'
+		ORDER BY GYMNAME
+	</select>
+
+	<!-- 로그인X : 강남구 체육관 추천 -->	
+	<select id="nearGymDefaultLists" resultType="com.exe.dto.GymDTO">
+		SELECT GYMID, GYMTYPE, GYMNAME, GYMTEL, GYMADDR, GYMPIC, GYMPROGRAM, GYMPASS FROM GYM
+		WHERE GYMADDR LIKE '%' || '서울특별시 강남구' || '%'
+		ORDER BY GYMNAME
+	</select>
+	
+	
+	
+	
+	<!-- ************** 상품 추천 ************** -->
+	
+	<!-- 회원 세션id를 기반으로 최신 예약 타입 추출 -->
+	<select id="customerRecentBookType" resultType="String" parameterType="String">
+		SELECT GYMTYPE FROM (
+		SELECT ROWNUM RNUM, B.GYMTYPE FROM BOOK A, GYM B 
+		WHERE A.GYMID = B.GYMID AND A.CUSID = #{sessionId} 
+		order by A.BOOKCREATED DESC) WHERE RNUM=1
+	</select>
+	
+	<!-- 로그인 시 : 추천상품리스트(Type내 조회순) -->
+	<select id="productRecommend" resultType="com.exe.dto.ProductDTO" parameterType="String">
+		SELECT * FROM (
+		SELECT ROWNUM RNUM, DATA.* FROM(
+		SELECT PRODUCTID, PRODUCTNAME, PRODUCTIMG, PRODUCTPRICE, PRODUCTHIT, PRODUCTCONTENT
+		FROM PRODUCT 
+		WHERE SUBSTR(PRODUCTID,0,1) = #{productType}
+		ORDER BY PRODUCTHIT DESC) DATA )
+		<![CDATA[WHERE RNUM>=1 AND RNUM<=8]]>
+	</select>
+	
+	
+	<!-- 로그인 X : 추천상품리스트(조회순)   -->
+	<select id="productRecommendDefault" resultType="com.exe.dto.ProductDTO">
+		SELECT * FROM(
+		SELECT ROWNUM RNUM, DATA.* FROM (
+		SELECT PRODUCTID, PRODUCTNAME, PRODUCTIMG, PRODUCTPRICE, PRODUCTHIT, PRODUCTCONTENT
+		FROM PRODUCT
+		ORDER BY PRODUCTHIT DESC) DATA )		
+		<![CDATA[WHERE RNUM>=1 AND RNUM<=8]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

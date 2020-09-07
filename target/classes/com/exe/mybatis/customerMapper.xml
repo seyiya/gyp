@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 로그인 맵퍼 -->
+<mapper namespace="customerMapper">
+
+<!-- customer 데이터 불러오기 -->
+<select id="getReadData" parameterType="hashMap" resultType="com.exe.dto.CustomerDTO"> 
+	select cusId,cusName,cusPwd,cusEmail,cusTel,cusAddr,cusAddrDetail,cusPass,cusCreated from CUSTOMER where cusId=#{sessionId}
+</select>
+
+<!-- 회원정보 수정(비밀번호) -->
+<!-- <update id="updateData" parameterType="com.exe.dto.CustomerDTO">
+	update CUSTOMER set cusPwd=#{cusPwd} where cusId=#{cusId}
+</update> -->
+
+<!-- 회원정보 수정 -->
+<update id="updateData" parameterType="com.exe.dto.CustomerDTO">
+	update CUSTOMER set cusName=#{cusName}, cusPwd=#{cusPwd}, cusEmail=#{cusEmail}, 
+	cusTel=#{cusTel}, cusAddr=#{cusAddr}, cusAddrDetail=#{cusAddrDetail},cusPass=#{cusPass} where cusId =#{cusId}
+</update>
+
+
+<!-- 회원정보 삭제 -->
+<delete id="deleteData" parameterType="com.exe.dto.CustomerDTO">
+	delete from customer where cusId=#{cusId}
+</delete>
+
+<!-- 리뷰 리스트 -->
+<select id="reviewgetLists" resultType="com.exe.dto.ReviewDTO">
+	select DISTINCT REVIEW.reNum,REVIEW.reType,REVIEW.cusId,GYM.gymName,PRODUCT.productName,REVIEW.star,REVIEW.reContent,to_char(REVIEW.reCreated,'YYYY-MM-DD') reCreated
+	from REVIEW left JOIN GYM ON REVIEW.gymId = GYM.gymId left JOIN PRODUCT ON REVIEW.productId = PRODUCT.productId
+	where REVIEW.cusId=#{reviewId} order by REVIEW.reNum desc
+</select>
+
+<!-- 체육관 리뷰 리스트 -->
+<select id="getGymReviewList" resultType="com.exe.dto.ReviewDTO">
+	select REVIEW.reNum,REVIEW.reType,REVIEW.cusId,GYM.gymName,REVIEW.gymId,GYM.gymId,REVIEW.productId,REVIEW.star,REVIEW.reContent,to_char(REVIEW.reCreated,'YYYY-MM-DD') reCreated
+	from REVIEW,GYM where REVIEW.cusId=#{reviewId} and REVIEW.gymId=GYM.gymId order by REVIEW.reNum desc
+</select>
+
+<!-- 리뷰 삭제-->
+<delete id="reviewdeleteData" parameterType="int">
+	delete from REVIEW where reNum=#{reNum}
+</delete>
+
+<!-- 찜 리스트 -->
+<select id="jjimgetLists" resultType="com.exe.dto.GymDTO">
+	select DISTINCT GYM.gymId,GYM.gymName,GYM.gymTel,GYM.gymAddr,GYM.gymCreated,JJIM.gymId,JJiM.cusId from GYM,JJIM where JJIM.gymId=GYM.gymId and JJIM.cusId=#{jjimId}
+</select>
+
+<!-- 찜 삭제-->
+<delete id="jjimdeleteData" parameterType="String">
+	delete from JJIM where gymId=#{gymId}
+</delete>
+
+<!-- 예약 리스트 -->
+<select id="bookgetLists" resultType="com.exe.dto.BookDTO">
+	select DISTINCT GYM.gymName,BOOK.gymId,BOOK.bookNum,BOOK.cusId,GYM.gymId,BOOK.gymTrainerPick,BOOK.bookType,BOOK.faceLink,BOOK.faceLinkCreated,BOOK.bookHour,to_char(BOOK.bookCreated,'YYYY-MM-DD') bookCreated 
+	from BOOK,GYM where GYM.gymId=BOOK.gymId and Book.cusId=#{bookId} order by BOOK.bookNum desc
+</select>
+
+<!-- 예약 삭제 시 Pass 환불 -->
+<update id="passRefund" parameterType="hashMap">
+	update CUSTOMER set cusPass=cusPass+#{gymPass} where cusId=#{cusId}
+</update>
+
+
+<!-- 예약 삭제-->
+<delete id="bookdeleteData" parameterType="int">
+	delete from BOOK where bookNum=#{bookNum}
+</delete>
+
+<!-- 상품 주문 리스트 -->
+<select id="getCusOrderList" resultType="com.exe.dto.CusProductOrderDTO">
+   select pp.proPayNum,pp.proPayCreated,pp.priceTotal,pp.proPayAddr,pp.proPayTel,pp.cusId,
+   ppd.proPayDetailNum, ppd.productId, ppd.count,
+   p.productName,p.productImg,p.productPrice
+   from product p, productPay pp, productPayDetail ppd
+   where pp.proPayNum = ppd.proPayNum and pp.cusId=#{cusId} and p.productId=ppd.productId 
+   order by proPayCreated desc
+</select>
+
+
+</mapper>

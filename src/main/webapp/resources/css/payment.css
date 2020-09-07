@@ -1,0 +1,76 @@
+@charset "UTF-8";
+
+/* 상품 정보 */
+#buying_items {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#buying_items td, #buying_items th {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+}
+
+#buying_items tr:nth-child(even){background-color: #f2f2f2;}
+
+#buying_items tr:hover {background-color: #ddd;}
+
+#buying_items th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #38b143;
+  color: white;
+  text-align: center;
+}
+#buying_items td {
+  text-align: center;
+}
+
+
+.col-12.col-md-6.col-lg-4 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+
+.fitness-btn {
+    position: relative;
+    z-index: 9;
+    display: inline-block;
+    min-width: 170px;
+    height: 45px;
+    color: #38b143;
+    border-radius: 10px;
+    padding: 0 30px;
+    font-size: 14px;
+    line-height: 39px;
+    font-weight: 700;
+    text-transform: uppercase;
+    -webkit-transition-duration: 500ms;
+    transition-duration: 500ms;
+    border: 3px solid #38b143;
+}
+
+.price-table-content {
+    border: 1px solid #38b143;
+    border-radius: 10px;
+    box-shadow: 7px 12px 8px #d2d2d2;
+}
+
+.price-table-content h2, .price-table-content h5,
+.price-table-content .description{
+   text-align:center;
+}
+
+div#결제 {
+    border: 2px solid #c0c0c0;
+    margin: 10px;
+    padding: 10px;
+}
+
+.pay-right{
+   float: right;
+}
+
+.pay-left{
+   float: left;
+}

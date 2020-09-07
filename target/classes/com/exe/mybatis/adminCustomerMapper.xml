@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="adminCustomerMapper">
+
+<!-- 
+<select id="maxNum" resultType="int">
+	select nvl(max(num),0) from customer
+</select>
+ -->
+
+<!-- 
+<insert id="insertData" parameterType="com.exe.dto.CustomerDTO">
+	insert into customer(cusid,cusname,cuspwd,cusemail,custel,cusaddr,cuspass,cuscreated)
+	values (#{cusid},#{cusname},#{cuspwd},#{cusemail},#{custel},#{cusaddr},#{cuspass},sysdate)
+</insert>
+ -->
+
+<select id="getDataCount" parameterType="hashMap" resultType="int">
+	select nvl(count(*),0) from customer
+	where ${searchKey} like '%' || #{searchValue} || '%'
+</select>
+
+<select id="getLists" parameterType="hashMap" resultType="com.exe.dto.CustomerDTO">
+	select * from (
+	select rownum rnum, data.* from(
+	select cusid, cusname, cuspwd, cusemail, custel, cusaddr, cuspass, to_char(cuscreated,'YYYY-MM-DD') cuscreated
+	from customer where ${searchKey} like '%' || #{searchValue} || '%'
+	order by cuscreated desc) data)
+<![CDATA[
+where rnum>=#{start} and rnum<=#{end}
+]]>
+</select>
+
+<select id="getReadData" parameterType="int" resultType="com.exe.dto.CustomerDTO">
+	select cusid, cusname, cuspwd, cusemail, custel, cusaddr, cuspass, cuscreated
+	from customer where cuscreated=#{cuscreated}
+</select>
+
+<!-- 
+<update id="updateHitCount" parameterType="int">
+	update board set hitCount = hitCount+1 where num=#{num}
+</update>
+ -->
+
+<!--  
+<update id="updateData" parameterType="com.exe.dto.CustomerDTO">
+	update board set
+	name=#{name},pwd=#{pwd},email=#{email},subject=#{subject},content=#{content}
+	where num=#{num}
+</update>
+ -->
+
+<delete id="deleteData" parameterType="String">
+	delete customer where cusid=#{cusid}
+</delete>
+
+</mapper>

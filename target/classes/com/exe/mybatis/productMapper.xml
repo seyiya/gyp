@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="productMapper">
+
+<!-- 예약 데이터 개수 -->
+<select id="getDataCount"  parameterType="hashMap" resultType="int">
+   select nvl(count(*),0) from product
+   where productId like '%' || #{searchValueCategory} ||'%'
+   and productName like '%' || #{searchValueWord} || '%'
+</select>
+
+<!-- 리스트 불러오기  -->
+<select id="getList" parameterType="hashMap" resultType="com.exe.dto.ProductDTO">
+      select * from (
+      select rownum rnum, data.* from (
+      select productId,productName,productImg,productPrice,productHit,productContent 
+      from PRODUCT where productId like '%' || #{searchValueCategory} ||'%'
+      and productName like '%' || #{searchValueWord} || '%'
+      order by productName desc) data)
+   <![CDATA[
+      where rnum>=#{start} and rnum<=#{end}
+   ]]>
+</select>
+
+<!-- product 데이터 불러오기 -->
+<select id="getProductReadData" parameterType="String" resultType="com.exe.dto.ProductDTO"> 
+   select productId,productName,productImg,productPrice,productHit,productContent 
+   from product where productId=#{productId}
+</select>
+
+<!-- 상품 조회수 증가 -->
+<update id="updateHitCount" parameterType="String">
+   update PRODUCT set productHit=productHit+1 where productId=#{productId}
+</update>
+
+<!-- 리스트 불러오기(높은가격순)  -->
+<select id="getpayupList" parameterType="hashMap" resultType="com.exe.dto.ProductDTO">
+      select * from (
+      select rownum rnum, data.* from (
+      select productId,productName,productImg,productPrice,productHit,productContent 
+      from PRODUCT where productId like '%' || #{searchValueCategory} ||'%'
+      and productName like '%' || #{searchValueWord} || '%'
+      order by productPrice desc) data)
+   <![CDATA[
+      where rnum>=#{start} and rnum<=#{end}
+   ]]>
+</select>
+
+<!-- 리스트 불러오기(낮은가격순) -->
+<select id="getpaydownList" parameterType="hashMap" resultType="com.exe.dto.ProductDTO">
+      select * from (
+      select rownum rnum, data.* from (
+      select productId,productName,productImg,productPrice,productHit,productContent 
+      from PRODUCT where productId like '%' || #{searchValueCategory} ||'%'
+      and productName like '%' || #{searchValueWord} || '%'
+      order by productPrice asc) data)
+   <![CDATA[
+      where rnum>=#{start} and rnum<=#{end}
+   ]]>
+</select>
+
+<!-- 리스트 불러오기(조회수)  -->
+<select id="gethitList" parameterType="hashMap" resultType="com.exe.dto.ProductDTO">
+      select * from (
+      select rownum rnum, data.* from (
+      select productId,productName,productImg,productPrice,productHit,productContent 
+      from PRODUCT where productId like '%' || #{searchValueCategory} ||'%'
+      and productName like '%' || #{searchValueWord} || '%'
+      order by productHit desc) data)
+   <![CDATA[
+      where rnum>=#{start} and rnum<=#{end}
+   ]]>
+</select>
+
+<!-- 장바구니 선택한 물품 출력 리스트 -->
+<select id="getProductList" parameterType="String" resultType="com.exe.dto.ProductDTO">
+      select productId,productName,productImg,productPrice,productHit,productContent 
+      from PRODUCT where productId in 
+      <foreach collection="array" item="proId" index="index"  open="(" close=")" separator=",">
+        #{proId}   
+         </foreach>
+</select>
+
+
+
+
+<!-- 리뷰 전체의 최댓값 : 삽입용 -->
+   <select id="getProductReviewNumMax" resultType="int">
+      select nvl(max(reNum),0) from review
+   </select>
+   
+<!-- 한 체육관의 리뷰 갯수 -->
+   <select id="getProductReviewNum" parameterType="String" resultType="int">
+      select nvl(count(*),0) from review where productId = #{productId}
+   </select>
+
+<!-- 리뷰 리스트 가져오기 -->
+   <select id="getProductReviewList" parameterType="map" resultType="com.exe.dto.ReviewDTO">
+      select * from (
+      select rownum rnum, data.* from (
+      select reNum,reType,cusId,productId,star,reContent,reCreated 
+      from review where productId=#{productId} 
+      order by reNum desc) data)
+   <![CDATA[
+      where rnum>=#{start} and rnum<=#{end}
+   ]]>
+   </select>
+   
+<!-- 리뷰 삽입 -->
+   <insert id="insertProductReviewData" parameterType="com.exe.dto.ReviewDTO">
+      insert into review (reNum,reType,cusId,productId,star,reContent,reCreated)
+      select #{reNum},#{reType},#{cusId},#{productId},#{star},#{reContent},sysdate from dual
+      where not exists (select * from review where cusId = #{cusId} and productId = #{productId})
+   </insert>
+   
+<!-- 리뷰 삭제 -->
+   <delete id="deleteProductReviewData" parameterType="int">
+      delete review where reNum=#{reNum}
+   </delete>
+
+<!-- 체육관 평점 평균 -->
+   <select id="getProductAvgReview" parameterType="String" resultType="int">
+      select nvl(avg(star), 0) from review where productId=#{productId}
+   </select>
+
+   
+<!-- 해당 체육관의 review 목록에 cusId가 있는 수 -->
+   <select id="getTimesCusReviewedProduct" parameterType="map" resultType="int">
+      select count(*) from (select * from review where productId=#{productId} and cusId=#{cusId})
+   </select>
+
+
+<!-- 해당 체육관의 Book 목록에 cusId가 있는 수 -->
+   <select id="getTimesCusBookedGym" parameterType="map" resultType="int">
+      select count(*) from (select * from book where cusId=#{cusId} and bookOk='true')
+   </select>
+   
+<!-- 해당 체육관의 review 목록에 cusId가 있는 수 -->
+   <select id="getTimesCusReviewedGym" parameterType="map" resultType="int">
+      select count(*) from (select * from review where productId=#{productId})
+   </select>
+
+
+<!-- 상품 결제 최댓값 - ProductPay테이블 
+   <select id="getProductProPayNumMax" resultType="int">
+      select nvl(max(proPayNum),0) from productPay
+   </select>
+   -->
+<!-- 상품 결제 삽입 - ProductPay 테이블
+   <insert id="insertProductProductPay" parameterType="com.exe.dto.ProductPayDTO">
+      insert into productPay (proPayNum, cusId, proPayCreated, priceTotal, proPayAddr, proPayTel)
+      values (#{proPayNum}, #{cusId}, sysdate, #{priceTotal}, #{proPayAddr}, #{proPayTel})
+   </insert>
+ -->
+
+<!-- productpay 데이터 불러오기 -->
+<select id="getProductPayData" resultType="com.exe.dto.ProductPayDTO"> 
+   select proPayNum,cusId,proPayCreated,priceTotal,proPayAddr,proPayTel 
+   from PRODUCTPAY
+</select>
+
+<!-- productpay 데이터 불러오기 -->
+<select id="getProductPayReadData" parameterType="String" resultType="com.exe.dto.ProductPayDTO"> 
+   select proPayNum,cusId,proPayCreated,priceTotal,proPayAddr,proPayTel 
+   from PRODUCTPAY where cusId=#{cusId}
+</select>
+
+<!-- productpaydetail 데이터 불러오기 -->
+<select id="getProductPayList" parameterType="int" resultType="com.exe.dto.ProductPayDetailDTO"> 
+   select proPayDetailNum,productId,proPayNum,count
+   from PRODUCTPAYDETAIL where proPayNum in
+   <foreach collection="array" item="proPayNum" index="index"  open="(" close=")" separator=",">
+       #{proPayNum}
+    </foreach>
+</select>
+
+<!-- 갯수 -->
+<select id="getProductPayDetailDataCount" parameterType="int" resultType="int">
+   select nvl(count(*),0) from PRODUCTPAYDETAIL where proPayNum in 
+   <foreach collection="array" item="proPayNum" index="index"  open="(" close=")" separator=",">
+       #{proPayNum}
+    </foreach>
+</select>
+
+<!-- 로그인한 유저가 구매한 상품 갯수 -->
+<select id="getProductPayDataCount" parameterType="String" resultType="int">
+   select nvl(count(*),0) from PRODUCTPAY where cusId=#{cusId}
+</select>
+
+</mapper>

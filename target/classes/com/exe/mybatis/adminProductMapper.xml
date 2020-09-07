@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="adminProductMapper">
+
+<!-- 
+<select id="maxNum" resultType="int">
+	select nvl(max(num),0) from product
+</select>
+ -->
+
+<insert id="insertData" parameterType="com.exe.dto.ProductDTO">
+	insert into product(productId, productName, productImg, productPrice, productHit, productContent)
+	values (#{productId}, #{productName}, #{productImg}, #{productPrice}, #{productHit}, #{productContent})
+</insert>
+
+<select id="getDataCount" parameterType="hashMap" resultType="int">
+	select nvl(count(*),0) from product
+	where ${searchKey} like '%' || #{searchValue} || '%'
+</select>
+
+<select id="getLists" parameterType="hashMap" resultType="com.exe.dto.ProductDTO">
+	select * from (
+	select rownum rnum, data.* from(
+	select productId, productName, productImg, productPrice, productHit, productContent
+	from product where ${searchKey} like '%' || #{searchValue} || '%'
+	order by productId) data)
+	<![CDATA[
+	where rnum>=#{start} and rnum<=#{end}
+	]]>
+</select>
+
+<select id="getReadData" parameterType="String" resultType="com.exe.dto.ProductDTO">
+	select productId, productName, productImg, productPrice, productHit, productContent
+	from product where productId=#{productId}
+</select>
+
+<update id="updateHitCount" parameterType="String">
+	update product set productHit = productHit+1 where productId=#{productId}
+</update>
+
+<update id="updateData" parameterType="com.exe.dto.ProductDTO">
+	update product set
+	productName=#{productName}, productImg=#{productImg}, productPrice=#{productPrice},productContent=#{productContent}
+	where productId=#{productId}
+</update>
+
+<delete id="deleteData" parameterType="String">
+	delete product where productId=#{productId}
+</delete>
+
+</mapper>

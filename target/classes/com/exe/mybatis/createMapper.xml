@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="createMapper">
+
+<!-- 개인회원가입 --> 
+<insert id="insertCus" parameterType="com.exe.dto.CustomerDTO">
+	insert into CUSTOMER(cusId,cusName,cusPwd,cusEmail,cusTel,cusAddr,cusAddrDetail,cusPass,cusCreated)
+	values (#{cusId},#{cusName},#{cusPwd},#{cusEmail},#{cusTel},#{cusAddr},#{cusAddrDetail},0,sysdate)
+</insert>
+
+<!-- 체육관회원가입 -->
+<insert id="insertGym" parameterType="com.exe.dto.GymDTO">
+	insert into GYM (gymId,gymType,gymName,gymPwd,gymEmail,gymTel,gymAddr,gymAddrDetail,gymLongitude,gymLatitude
+	,gymTrainer,gymTrainerPic,gymPic,gymProgram,gymFacility,gymHour,gymCreated,gymPass,gymOk)
+	values (#{gymId},#{gymType},#{gymName},#{gymPwd},#{gymEmail},#{gymTel},#{gymAddr},#{gymAddrDetail},1,1,
+	#{gymTrainer},#{gymTrainerPic},#{gymPic},#{gymProgram},#{gymFacility},#{gymHour},sysdate,0,'false')
+</insert>
+
+
+<!-- 개인회원 아이디 중복 체크 -->
+<select parameterType="com.exe.dto.GymDTO" id="cusidCheck" resultType="int">
+	SELECT sum(a.a+b.a)
+     FROM
+           ( select count(*) a from CUSTOMER where cusId   = #{cusId} ) a
+        ,  ( select count(*) a from gym      where gymId = #{cusId} ) b
+</select>
+
+<!-- 체육관회원 아이디 중복 체크 -->
+<select parameterType="com.exe.dto.GymDTO" id="gymidCheck" resultType="int">
+	SELECT sum(a.a+b.a)
+     FROM
+           ( select count(*) a from CUSTOMER where cusId   = #{gymId} ) a
+        ,  ( select count(*) a from gym      where gymId = #{gymId} ) b
+</select>
+
+<!-- 개인회원 아이디 중복 체크 -->
+<!-- <select parameterType="String" id="Id_Check" resultType="com.app.app.Dto.UserDto">SELECT cusId FROM customer where cusId = #{cusId} </select> -->
+
+<!-- 개인회원 전화번호 중복 체크 -->
+<select parameterType="com.exe.dto.GymDTO" id="custelCheck" resultType="int">
+	SELECT sum(a.a+b.a)
+     FROM
+           ( select count(*) a from CUSTOMER where cusTel   = #{cusTel} ) a
+        ,  ( select count(*) a from gym      where gymTel = #{cusTel} ) b
+</select>
+
+<!-- 체육관회원 전화번호 중복 체크 -->
+<select parameterType="com.exe.dto.GymDTO" id="gymtelCheck" resultType="int">
+	SELECT sum(a.a+b.a)
+     FROM
+           ( select count(*) a from CUSTOMER where cusTel   = #{gymTel} ) a
+        ,  ( select count(*) a from gym      where gymTel = #{gymTel} ) b
+</select>
+
+</mapper>

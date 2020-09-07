@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="loginMapper">
+
+<!-- 일반 회원 로그인 -->
+<select id="getLoginReadData" parameterType="hashMap" resultType="com.exe.dto.CustomerDTO"> 
+	select cusId,cusName,cusPwd,cusEmail,cusTel,cusAddr,cusPass,cusCreated from CUSTOMER where cusId=#{sessionId}
+</select>
+
+<!-- 체육관 로그인 -->
+<select id="getGymLoginReadData" parameterType="hashMap" resultType="com.exe.dto.GymDTO"> 
+	select gymId,gymName,gymPwd,gymEmail,gymTel,gymAddr,gymPass,gymCreated from GYM where gymId=#{sessionId}
+</select>
+
+<!-- 유무성 검사 -->
+<select id="getDataCount" parameterType="hashMap" resultType="int">
+	select nvl(count(*),0) from customer 
+	where cusId=#{sessionId}
+</select>
+
+<!-- 아이디 검색용 데이터 -->
+<select id="getLoginIdReadData" parameterType="hashMap" resultType="com.exe.dto.CustomerDTO">
+	select cusId,cusName,cusPwd,cusEmail,cusTel,cusAddr,cusPass,cusCreated from CUSTOMER where cusName=#{cusName} and cusTel=#{cusTel}
+</select>
+
+</mapper>

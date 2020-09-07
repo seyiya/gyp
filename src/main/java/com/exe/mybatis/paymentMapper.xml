@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="paymentMapper">
+
+<!-- 충전 전체의 최댓값 : pass 결제 삽입용 -->
+	<select id="getChargeNumMax" resultType="int">
+		select nvl(max(chargeNum),0) from charge
+	</select>
+
+<!-- 충전 삽입 : pass 결제 후 삽입 -->
+	<insert id="insertChargeData" parameterType="com.exe.dto.ChargeDTO">
+		insert into charge (chargeNum,cusId,chargePass,chargeCreated,chargeType)
+		values (#{chargeNum},#{cusId},#{chargePass},sysdate,#{chargeType})
+	</insert>
+
+<!-- 상품 조회 -->
+	<select id="getProductOrderList" parameterType="map" resultType="com.exe.dto.ProductOrderDTO">
+		select c.cartNum,c.productId,p.productName,p.productImg,p.productPrice,c.count
+		from cart c, product p where
+		c.cartNum=#{cartNum} and c.productId=p.productId and c.cusId=#{cusId}
+	</select>
+	
+<!-- 상품 결제 최댓값 - ProductPay테이블 -->
+	<select id="getProPayNumMax" resultType="int">
+		select nvl(max(proPayNum),0) from productPay
+	</select>
+	
+<!-- 상품 결제 삽입 - ProductPay 테이블 -->
+	<insert id="insertProductPay" parameterType="com.exe.dto.ProductPayDTO">
+		insert into productPay (proPayNum, cusId, proPayCreated, priceTotal, proPayAddr, proPayTel)
+		values (#{proPayNum}, #{cusId}, sysdate, #{priceTotal}, #{proPayAddr}, #{proPayTel})
+	</insert>
+	
+<!-- 상품 결제 최댓값 - ProductPay테이블 -->
+	<select id="getProPayDetailNumMax" resultType="int">
+		select nvl(max(proPayDetailNum),0) from productPayDetail
+	</select>
+
+<!-- 상품 결제 삽입 - ProductPayDetail 테이블 -->
+	<select id="insertProductPayDetail" parameterType="com.exe.dto.ProductPayDetailDTO">
+		insert into productPayDetail (proPayDetailNum,productId,proPayNum,count)
+		values (#{proPayDetailNum},#{productId},#{proPayNum},#{count})
+	</select>
+	
+<!-- 장바구니 삭제 -->
+	<delete id="deleteFromCartAfterPayment" parameterType="map">
+		delete from cart where productId = #{productId} and cusId=#{cusId}
+	</delete>
+
+	
+</mapper>

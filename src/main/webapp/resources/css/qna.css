@@ -1,0 +1,83 @@
+@charset "UTF-8";
+
+#qnaList {
+	width: 700px;
+	height:device-height;
+	margin: 30px auto;
+	font-color:#808080;
+}
+
+h5 {
+	color: green;
+	text-align: left;
+}
+
+#qnaList_title {
+	width: 664px; /* 690px - (padding-left+border:3px+border:3px) */
+	padding-left: 20px;
+	height: 40px;
+	text-align: left;
+	font-weight: bold;
+	line-height: 40px;
+	font-size: 30pt;
+	margin-bottom: 30px;
+}
+
+#qnaList_list #right {
+	float: right;
+	width: 345px;
+	text-align: right;
+}
+#qnaList_list #left {
+	float:left;
+	width: 345px;
+	text-align: left;
+}
+#qnaList_footer{
+	text-align:center;
+	clear:both;
+	height:32px;
+	line-height:32px;
+	margin-top:5px;
+	text-decoration:none;
+}
+#qnaArticle_footer{
+	clear:both;
+	height:32px;
+	line-height:32px;
+	margin-bottom:20px;
+}
+#qnaArticle_footer #qnaChk{
+    width:150px;
+    border: 2px solid #38b143;
+	color:white;
+	background-color:#38b143;
+	border-radius: 10px;
+	margin:10px;
+}
+#qnaArticle_footer #qnaChk:hover{
+    width:150px;
+    border: 2px solid #008000;
+	color: white;
+	background-color:#008000;
+	border-radius: 10px;
+	margin:10px;
+}
+
+td {
+	width: 500px;
+	margin: auto;
+}
+
+
+/* fontawesome */
+input[type="submit"]{
+   font-family : FontAwesome;
+}
+
+ 
+.bokyung_qnaCreatedFont{
+	font-size : 12pt;
+	font-weight : bold;
+	
+}

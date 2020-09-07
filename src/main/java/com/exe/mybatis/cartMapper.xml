@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cartMapper">
+
+<!-- 카트 전체의 최댓값 : 삽입용 -->
+<select id="getCartNumMax" resultType="int">
+	select nvl(max(cartNum),0) from cart
+</select>
+
+<!-- product 데이터 불러오기 -->
+<select id="getCartReadData" parameterType="String" resultType="com.exe.dto.CartDTO"> 
+	select cartNum,cusId,productId,count
+	from cart where cartNum = #{chkNum}
+</select>
+
+<!-- product 데이터 불러오기(배열로 넘어온값) -->
+<select id="getCartReadData2" parameterType="int" resultType="com.exe.dto.CartDTO"> 
+	select cartNum,cusId,productId,count
+	from cart where cartNum in
+	<foreach collection="array" item="numsI" index="index"  open="(" close=")" separator=",">
+        #{numsI}
+    </foreach>
+</select>
+
+<!-- 장바구니에 같은 아이디, 같은 물건 있는지 확인 -->
+<select id="cartCheckSame" parameterType="com.exe.dto.CartDTO" resultType="int">
+	select nvl(count(*),0) from cart
+	where cusId = #{cusId} and productId = #{productId}
+</select>
+
+<!--장바구니 추가 -->
+<insert id="cartInsertData" parameterType="com.exe.dto.CartDTO">
+	insert into cart(cartNum,cusId,productId,count)
+	values (#{cartNum},#{cusId},#{productId},#{count})
+</insert>
+
+<!-- 장바구니 기존 물품의 갯수만 변경 -->
+<update id="cartCountChange" parameterType="com.exe.dto.CartDTO">
+	update cart set count = count + #{count} 
+	where cusId = #{cusId} and productId = #{productId} 
+</update>
+
+
+<!-- 카트 리스트 -->
+<select id="getcartList" parameterType="String" resultType="com.exe.dto.CartDTO">
+		select CART.productId,CART.cartNum,CART.cusId,CART.count,PRODUCT.productName,PRODUCT.productImg,PRODUCT.productPrice
+		from CART,PRODUCT where CART.cusId = #{cusId} and CART.productId = PRODUCT.productId order by CART.cartNum desc
+</select>
+
+<!--카트 삭제(여러개) -->
+<delete id="selectDeleteCart" parameterType="int">
+	delete from CART 
+	where cartNum in
+	<foreach collection="array" item="numsI" index="index"  open="(" close=")" separator=",">
+        #{numsI}
+    </foreach>
+</delete>
+
+<!-- 카트 삭제(하나삭제) -->
+<delete id="deleteCart" parameterType="int">
+	delete from CART where cartNum=#{numI}
+</delete>
+
+<!-- 카트 삭제(직접) -->
+<delete id="OnedeleteCart" parameterType="int">
+	delete from CART where cartNum=#{cartNum}
+</delete>
+
+<!-- 전체 삭제  -->
+<delete id="AlldeleteCart" parameterType="int">
+	delete from CART 
+</delete>
+
+<!-- 장바구니 상품 갯수변경 -->
+<update id="cartCountUpdate" parameterType="hashMap">
+	update cart set count = #{count} 
+	where cartNum = #{cartNum}
+</update>
+
+
+</mapper>

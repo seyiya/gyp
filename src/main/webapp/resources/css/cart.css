@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+*{
+	padding: 0;
+	margin: 0;
+}
+
+body{
+	background-color: #FFF;
+	font-family: 'Do Hyeon', sans-serif;
+	min-height: 100%; height: auto  /*푸터 붙임*/
+}
+
+div#wrapper_cart {
+	justify-content : center; /*가운데정렬*/
+    width: 60%;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    font-family: 'Do Hyeon';
+}
+.bokyung_button_cart1 {
+	float: right;
+	margin : 10px 5px 10px 5px ;
+	padding: 5px;
+	font-family: 'Do Hyeon', sans-serif;
+	font-size: 13pt;
+	background-color: #7a7ebf;
+	color: white;
+	border: 0;
+	border-radius: 30px;
+	vertical-align: middle;
+	width: 100px;
+	cursor:pointer;
+}
+
+.bokyung_button_cart2 {
+	float: right;
+	margin : 10px 5px 10px 5px ;
+	padding: 10px;
+	font-family: 'Do Hyeon', sans-serif;
+	font-size: 15pt;
+	background-color: #0F168C;
+	color: white;
+	border: 0;
+	border-radius: 30px;
+	vertical-align: middle;
+	width: 120px;
+	cursor:pointer;
+}
+
+.bokyung_button_cart_change {
+	float: left;
+	margin : 10px 10px 10px 10px ;
+	padding: 5px;
+	font-family: 'Do Hyeon', sans-serif;
+	font-size: 13pt;
+	background-color: #7a7ebf;
+	color: white;
+	border: 0;
+	border-radius: 30px;
+	vertical-align: middle;
+	width: 50px;
+}

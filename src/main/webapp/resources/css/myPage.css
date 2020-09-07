@@ -1,0 +1,138 @@
+@charset "UTF-8";
+
+
+div#myPage_wrapper {
+    width: 60%;
+    margin: 3% auto;
+    height: auto;
+    font-family:'Noto Sans KR', sans-serif;
+    padding: 1em;
+}
+
+#content hr{
+	border: thin dashed #DFDFEB;
+}
+
+hr#main_hr{
+	border: thin solid black;
+}
+
+
+.containter {
+    width: 100%;
+    margin: auto;
+}
+
+.mp_title {
+	font-size: 17px;	
+	font-weight: bold;
+	padding: 5px;
+	margin: 10px;
+}
+
+.table_bokyung {
+	margin: 1em auto;
+	background-color: #DAE6C3; /*테이블 배경색*/
+	width: 100%;
+	border-radius: 10px;
+	border-collapse: collapse;
+	border-spacing:10px;
+}
+
+table tr{
+	border-bottom: 1px solid white;
+}
+
+table tr:last-child{
+	border-bottom: 0;
+}
+
+table td{
+	color: #333;
+
+}
+table td:last-child{
+	border-right: 0;
+}
+
+.title{
+	font-size: 12pt;
+	text-align :right;
+	padding-right: 30px; 
+	font-weight: bold; 
+	color: #22741C;
+}
+
+.title2{
+	font-size: 12pt;
+	text-align :right;
+	font-weight: bold; 
+	color: #22741C;
+	vertical-align: middle;
+}
+
+
+.right_float {
+	float: right;
+	display: inline-block;
+	vertical-align: middle;
+	padding: 5px;
+	margin: 10px;
+}
+
+.tr_white{
+	background-color: #fff;
+}
+input.bokyung_mypage_text{
+	border: 0; 
+	background-color: #eee; 
+	height: 30px;
+	padding-left: 10px;
+}
+
+input.bokyung_mypage_button{
+	float: right;
+	margin : 0px 5px 0px 5px ;
+	padding: 5px;
+	font-family: 'Do Hyeon', sans-serif;
+	font-size: 13pt;
+	background-color: #7a7ebf;
+	color: white;
+	border: 0;
+	border-radius: 30px;
+	vertical-align: middle;
+	width: 130px;
+	height: 32px;
+	cursor:pointer;
+}
+
+/*수정, 쓰기*/
+a.bokyung_mypage_link
+	{color:#22741C;}
+
+a.bokyung_mypage_link:visited
+	{color:#22741C; text-decoration:none;}
+
+a.bokyung_mypage_link:hover
+	{color:#38b143; text-decoration:none;}
+
+
+/*삭제*/
+a.bokyung_mypage_link_D:link
+	{color:#E6738A;}
+
+a.bokyung_mypage_link_D:hover
+	{color:#FF0000; text-decoration:none;}
+	
+/*보기*/
+a.bokyung_mypage_link_see:link
+	{color:#7a7ebf;}
+
+a.bokyung_mypage_link_see:visited
+	{color:#7a7ebf; text-decoration:none;}
+
+a.bokyung_mypage_link_see:hover
+	{color:#2E338C; text-decoration:none;}
+	
+	
+}

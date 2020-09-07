@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+<!-- notiNum 최대값 -->
+<select id="maxNum" resultType="int">
+	select nvl(max(notiNum),0) from notice
+</select>
+<!-- qna 생성 -->
+<insert id="insertData" parameterType="com.exe.dto.NoticeDTO">
+	insert into notice (notiNum,notiTitle,notiContent,notiCreated) 
+	values (#{notiNum},#{notiTitle},#{notiContent},sysdate)
+</insert>
+<!--등록된 데이터 총 개수 -->
+<select id="getDataCount"  resultType="int">
+	select nvl(count(*),0) from notice
+</select>
+<!-- 리스트로 나열 -->
+<select id="getLists" parameterType="HashMap" resultType="com.exe.dto.NoticeDTO">
+	select * from (
+	select rownum rnum,data.* from (
+	select notiNum,notiTitle,notiContent,to_char(notiCreated,'YYYY-MM-DD') notiCreated
+	from notice order by notiNum desc) data) 
+<![CDATA[
+	where rnum>=#{start} and rnum<=#{end}
+]]>	
+</select>
+<!-- article.jsp에서 해당 notiNum에 맞는 값들 선택  -->
+<select id="getReadData" parameterType="int" resultType="com.exe.dto.NoticeDTO">
+	select notiNum,notiTitle,notiContent,notiCreated
+	from notice where notiNum=#{notiNum}
+</select>
+<!-- 이전글 -->
+<select id="preReadData" resultType="com.exe.dto.NoticeDTO" >
+<![CDATA[
+	select rownum, data.* from (
+	select notiNum,notiTitle from notice 
+	where (notiNum > #{notiNum}) order by notiNum asc) data 
+	where rownum=1
+]]>	
+</select>
+<!-- 다음글 -->
+<select id="nextReadData" resultType="com.exe.dto.NoticeDTO">
+<![CDATA[
+	select rownum, data.* from (
+	select notiNum,notiTitle from notice 
+	where (notiNum < #{notiNum}) order by notiNum desc) data 
+	where rownum=1
+]]>	
+</select>
+
+
+<!-- 해당 데이터 수정 -->
+<update id="updateData" parameterType="com.exe.dto.NoticeDTO">
+	update notice set notiTitle=#{notiTitle},notiContent=#{notiContent} 
+	where notiNum=#{notiNum}
+</update>
+<!-- 해당 데이터 삭제 -->
+<delete id="deleteData" parameterType="int">
+	delete from notice where notiNum=#{notiNum}
+</delete>
+
+</mapper>
+
+
